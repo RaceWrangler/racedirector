@@ -1,0 +1,72 @@
+﻿@page "/addEntry"
+
+
+@using Microsoft.AspNetCore.Components.Rendering
+
+@using racedirector.Services
+@using racedirector.Data.Models
+
+@inject IClassificationService service
+
+<h3>AddEntry</h3>
+
+<EditForm Model="@entry" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>
+            Number
+            <InputText @bind-Value="entry.Number" />
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Class
+            <InputSelect @bind-Value="entry.Class">
+                @{ BuildClasses(__builder); }
+            </InputSelect>
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            PAX
+            <InputSelect @bind-Value="entry.Class">
+                @{ BuildClasses(__builder); }
+            </InputSelect>
+        </label>
+    </div>
+
+</EditForm>
+
+
+
+@code {
+    private RaceEntry entry = new RaceEntry();
+    private List<Classification> classes = new List<Classification>();
+
+    private void HandleValidSubmit()
+    {
+
+    }
+
+    private async void BuildClasses(RenderTreeBuilder __builder)
+    {
+        if (0 == classes.Count)
+        {
+            try
+            {
+                classes = await service.Get();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Exception occurred: {e}");
+            }
+        }
+
+        foreach (Classification cls in classes)
+        {
+             <option value="@cls.Abbreviation">@cls.Abbreviation</option>
+        }
+    }
+}

@@ -1,0 +1,32 @@
+﻿@using racedirector.Data.Models 
+
+<div class="add-class">
+    <div class="form-group">
+        <label for="class-name">Class Name</label>
+        <input @bind="newClass.Name" type="text" class="form-control" id="first-name" placeholder="Enter email" />
+    </div>
+    <div class="form-group">
+        <label for="abbreviation">Abbreviation</label>
+        <input @bind="newClass.Abbreviation" type="text" class="form-control" id="last-name" placeholder="Enter email" />
+    </div>
+    <div class="form-group">
+        <label for="handicap">Handicap</label>
+        <input @bind="newClass.Handicap" type="text" class="form-control" id="last-name" placeholder="Enter email" />
+    </div>
+    <button @onclick="SubmitForm" class="btn btn-primary">Submit</button>
+</div>
+
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    //[Parameter] public Action DataChanged { get; set; }
+
+    public Classification newClass = new Classification();
+
+    private void SubmitForm()
+    {
+        BlazoredModal.Close(ModalResult.Ok<Classification>(newClass));
+        //DataChanged?.Invoke();
+    }
+}

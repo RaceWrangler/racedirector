@@ -1,0 +1,78 @@
+﻿@page "/classes"
+
+@using racedirector.Services
+@using racedirector.Data.Models
+@inject IClassificationService service
+@inject Blazored.Modal.Services.IModalService Modal 
+
+<h3>Classes</h3>
+
+
+@if (!loaded && classes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    if (classes.Count == 0)
+    {
+        <p><em>There are no Classes configured, please add some!</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Abbreviation</th>
+                    <th>Handicap</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cls in classes)
+                {
+                    <tr>
+                        <td>@cls.Name</td>
+                        <td>@cls.Abbreviation</td>
+                        <td>@cls.Handicap</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+<div>
+    <button @onclick="ShowAdd">Add Class</button>
+</div>
+
+@*<AddClassification TaskObject=taskObject DataChanged="@DataChanged">
+
+</AddClassification>*@
+
+
+@code {
+
+    private List<Classification> classes;
+    private bool loaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        classes = await service.Get();
+        loaded = true;
+    }
+
+    private async void ShowAdd()
+    {
+        var formModal = Modal.Show<AddClassification>("Add Class");
+        var result = await formModal.Result;
+
+        if(!result.Cancelled)
+        {
+            classes.Add(result.Data as Classification);
+            await service.Add(result.Data as Classification);
+            StateHasChanged();
+        }
+
+    }
+}
