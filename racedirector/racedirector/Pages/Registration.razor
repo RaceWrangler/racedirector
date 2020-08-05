@@ -1,0 +1,74 @@
+﻿@page "/registration"
+
+@using racedirector.Data.Models
+@using racedirector.Pages.Modal
+
+@inject IRegistrationService service
+@inject Blazored.Modal.Services.IModalService Modal
+
+
+<h3>Registration</h3>
+
+@if (!loaded && raceEntries == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    if (raceEntries.Count == 0)
+    {
+        <p><em>There are no Register competitors, please add some!</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Number</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var re in raceEntries)
+                {
+                    <tr>
+                        <td>@re.Class.Abbreviation</td>
+                        <td>@re.Number</td>
+                        <td>@re.Driver.LastName, @re.Driver.FirstName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+<div>
+    <button @onclick="ShowAdd">Add Registration</button>
+</div>
+
+
+@code {
+    private List<RaceEntry> raceEntries;
+    private bool loaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        raceEntries = await service.Get();
+        loaded = true;
+    }
+
+    private async void ShowAdd()
+    {
+        var formModal = Modal.Show<AddRegistration>("Add Class");
+        var result = await formModal.Result;
+
+        if (!result.Cancelled)
+        {
+            raceEntries.Add(result.Data as RaceEntry);
+            await service.Add(result.Data as RaceEntry);
+            StateHasChanged();
+        }
+
+    }
+}

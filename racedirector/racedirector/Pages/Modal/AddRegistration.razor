@@ -1,0 +1,54 @@
+﻿@using racedirector.Data.Models
+@inject IClassificationService classService
+
+
+<div class="add-reg">
+    <div class="form-group">
+        <label for="class-name">First Name</label>
+        <input @bind="newReg.Driver.FirstName" type="text" class="form-control" id="first-name" placeholder="First Name" />
+    </div>
+    <div class="form-group">
+        <label for="abbreviation">Last Name</label>
+        <input @bind="newReg.Driver.LastName" type="text" class="form-control" id="last-name" placeholder="Last Name" />
+    </div>
+    <div class="form-group">
+        <label for="handicap">Member Number</label>
+        <input @bind="newReg.Driver.MemberNumber" type="text" class="form-control" id="last-name" placeholder="Member Number" />
+    </div>
+    <div class="form-group">
+        <label for="classification">Class</label>
+        <select @bind="selClass" class="form-control" id="classification">
+            @foreach(var cls in classes)
+            {
+                <option value="@cls.Abbreviation">@cls.Abbreviation</option>
+            }
+        </select>
+    </div>
+
+    <button @onclick="SubmitForm" class="btn btn-primary">Submit</button>
+</div>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    public RaceEntry newReg = new RaceEntry();
+    public List<Classification> classes = new List<Classification>();
+
+    [System.ComponentModel.DataAnnotations.Required]
+    private string selClass = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        classes = await classService.Get();
+    }
+
+    private void SubmitForm()
+    {
+        newReg.Class = (from cls in classes
+                        where selClass == cls.Abbreviation
+                        select cls).Single();
+
+        BlazoredModal.Close(ModalResult.Ok<RaceEntry>(newReg));
+    }
+}

@@ -34,7 +34,7 @@ namespace racedirector
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
+                options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -43,6 +43,7 @@ namespace racedirector
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IClassificationService, ClassificationService> ();
+            services.AddScoped<IRegistrationService, RegistrationService>();
             services.AddBlazoredModal();
         }
 

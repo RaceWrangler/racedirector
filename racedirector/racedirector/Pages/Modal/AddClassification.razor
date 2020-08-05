@@ -1,4 +1,4 @@
-﻿@using racedirector.Data.Models 
+﻿@using racedirector.Data.Models
 
 <div class="add-class">
     <div class="form-group">
@@ -20,13 +20,10 @@
 @code {
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    //[Parameter] public Action DataChanged { get; set; }
-
     public Classification newClass = new Classification();
 
     private void SubmitForm()
     {
         BlazoredModal.Close(ModalResult.Ok<Classification>(newClass));
-        //DataChanged?.Invoke();
     }
 }

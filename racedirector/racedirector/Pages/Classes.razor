@@ -2,8 +2,9 @@
 
 @using racedirector.Services
 @using racedirector.Data.Models
+@using racedirector.Pages.Modal
 @inject IClassificationService service
-@inject Blazored.Modal.Services.IModalService Modal 
+@inject Blazored.Modal.Services.IModalService Modal
 
 <h3>Classes</h3>
 
@@ -46,11 +47,6 @@ else
     <button @onclick="ShowAdd">Add Class</button>
 </div>
 
-@*<AddClassification TaskObject=taskObject DataChanged="@DataChanged">
-
-</AddClassification>*@
-
-
 @code {
 
     private List<Classification> classes;
@@ -67,7 +63,7 @@ else
         var formModal = Modal.Show<AddClassification>("Add Class");
         var result = await formModal.Result;
 
-        if(!result.Cancelled)
+        if (!result.Cancelled)
         {
             classes.Add(result.Data as Classification);
             await service.Add(result.Data as Classification);
